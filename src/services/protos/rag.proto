@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package rag;
+
+service RagService {
+  rpc GetStory (StoryRequest) returns (StoryResponse) {}
+  rpc GetSurpriseBox (SurpriseBoxRequest) returns (SurpriseBoxResponse) {};
+  rpc GetActiveInteractionMemory (MemoryRequest) returns (MemoryResponse);
+  rpc GetICanMemory (MemoryRequest) returns (MemoryResponse);
+  rpc GetAgentAllMemory (MemoryRequest) returns (MemoryResponse);
+  rpc GetChildAllMemory (MemoryRequest) returns (MemoryResponse);
+  rpc GetRelateMemory (MemoryRequest) returns (MemoryResponse);
+  rpc RetrieveSong (RetrieveSongRequest) returns (RetrieveSongResponse);
+}
+
+message RetrieveSongRequest {
+  string query = 1;
+}
+
+message RetrieveSongResponse {
+  bool is_random = 1;
+  string song_id = 2;
+  string tag = 3;
+}
+
+message MemoryRequest {
+  string child_id = 1;
+  optional string agent_id = 2;
+  optional string query = 3;
+  optional string intent = 4;
+  optional int32 limit = 5;
+}
+
+message MemoryResponse {
+  bool success = 1;
+  repeated MemoryItem data = 2;
+}
+
+message MemoryItem {
+  string memory_content = 1;
+  string memory_type = 2;
+  int32 metion_count = 3;
+  string update_at = 4;
+  string hypernym = 5;
+}
+
+message StoryRequest {
+  string child_id = 1;
+  string input_text = 2;
+}
+
+message StoryData {
+    string origin_id = 1;
+    string title = 2;
+    string content = 3;
+    string label = 4;
+    string audio_path = 5;
+}
+
+message StoryResponse {
+    int32 code = 1;
+    string message = 2;
+    string action = 3;
+    StoryData data = 4;
+}
+
+message SurpriseBoxRequest {
+  string user_id = 1;
+  string device_id = 2;
+  string child_id = 3;
+  string category = 4;
+  int32 age = 5;
+}
+
+message BoxData {
+  string box_id = 1;
+  string child_id = 2;
+  string category = 3;
+  string query = 4;
+  string prompt = 5;
+}
+
+message SurpriseBoxResponse {
+  int32 code = 1;
+  string message = 2;
+  BoxData data = 3;
+} 

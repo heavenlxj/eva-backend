@@ -1,0 +1,48 @@
+# 网址过滤规则
+# 格式：每行一个URL或域名模式，支持通配符
+# 包含恶意网址、广告网址、可疑域名等
+
+# 恶意网址
+*.bit.ly
+*.tinyurl.com
+*.short.link
+*.t.co
+*.goo.gl
+*.ow.ly
+*.is.gd
+*.v.gd
+*.shortened.link
+*.link
+*.click
+*.tk
+*.ml
+*.ga
+*.cf
+
+# 广告网址
+*.ads.com
+*.advertisement.com
+*.promo.com
+*.sale.com
+*.discount.com
+*.offer.com
+*.deal.com
+*.coupon.com
+*.voucher.com
+*.affiliate.com
+*.referral.com
+*.sponsor.com
+*.marketing.com
+*.promotion.com
+
+# 可疑域名
+*.suspicious-site.com
+*.risky-domain.org
+*.unknown-site.net
+*.strange-domain.info
+*.weird-site.biz
+*.odd-domain.co
+*.unusual-site.ru
+*.questionable-domain.cn
+*.dubious-site.jp
+*.fishy-domain.de

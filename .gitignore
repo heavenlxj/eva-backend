@@ -1,0 +1,13 @@
+# misc
+.DS_Store
+*.swp
+*.log
+
+*.pyc
+# local env files
+.env*.local
+
+.idea
+src/*.log
+src/alembic/*
+src/alembic.ini

@@ -1,0 +1,154 @@
+# Default values for kido.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+image:
+  repository: registry-vpc.cn-beijing.aliyuncs.com/benepal/wechat-backend
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "20250419-19-25"
+
+
+imagePullSecrets:
+  - name: benepal-image-bj
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 500Mi
+  requests:
+    cpu: 500m
+    memory: 500Mi
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 30  # 给应用30秒启动时间
+  periodSeconds: 10        # 每10秒检查一次
+  timeoutSeconds: 3        # 超时时间增加到3秒
+  successThreshold: 1      # 成功1次即认为健康
+  failureThreshold: 5      # 失败5次才认为不健康（给更多容错）
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 10  # 就绪探针可以更快
+  periodSeconds: 5         # 每5秒检查一次
+  timeoutSeconds: 2        # 超时时间2秒
+  successThreshold: 1      # 成功1次即认为就绪
+  failureThreshold: 3      # 失败3次才认为不就绪
+
+autoscaling: {}
+
+env:
+  KIDO_MYSQL_HOST: "pc-2ze46jh069qo8lme0.rwlb.rds.aliyuncs.com"
+  KIDO_MYSQL_PORT: 3306
+  KIDO_MYSQL_USERNAME: "user"
+  KIDO_MYSQL_PASSWORD: "5d2rcs_USER"
+  KIDO_MYSQL_DATABASE: "kido"
+  KIDO_MYSQL_ECHO: "false"
+  KIDO_MYSQL_POOL_PRE_PING: "true"
+  KIDO_MYSQL_POOL_SIZE: 50
+  KIDO_MYSQL_MAX_OVERFLOW: 200
+  KIDO_MYSQL_POOL_RECYCLE: 3600
+  KIDO_MYSQL_POOL_TIMEOUT: 30
+
+  REDIS_HOST: "r-2zejzdtcpxuexht5dt.redis.rds.aliyuncs.com"
+  REDIS_PORT: 6379
+  REDIS_PASSWORD: "5d2rcs_REDIS_user"
+  REDIS_DB: 0
+
+  WECHAT_APPID: "wx269b622ec0a8fa09"
+  WECHAT_SECRET: "a1f70a3e63da207284f9c59d6a81ba8e"
+
+  WHALE_URL: "http://whale:80"
+  API_ENABLE_CLIENT_VERIFICATION: "true"
+
+  RABBITMQ_HOST: "amqp-cn-36z470i18009.cn-beijing.amqp-21.vpc.mq.amqp.aliyuncs.com"
+  RABBITMQ_PORT: 5672
+  RABBITMQ_USERNAME: "MjphbXFwLWNuLTM2ejQ3MGkxODAwOTpMVEFJNXRONDhIMnFlOHlneVhremhmTXg="
+  RABBITMQ_PASSWORD: "QzZCQjkwNDBCOTZBMjZFNkUzN0E5QTJEMTlEQjJBMzIxMkYzODA4MDoxNzQzMzkxMTg2Nzc4"
+  RABBITMQ_DATA_TRACKING_EXCHANGE: "data_tracking"
+  RABBITMQ_DATA_TRACKING_QUEUE: "data_tracking_queue"
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# white list for child id
+childWhitelist:
+  - "e262d7f1347a41669ae358588ea17b7d"

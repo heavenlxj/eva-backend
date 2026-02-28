@@ -16,10 +16,10 @@ from entity.user import (
 )
 
 from repositories.user import UserRepository
-
 from repositories.user_source import UserSourceRepository
 from repositories.userid_unionid_mapping import UseridUnionidMappingRepository
 from repositories.miniprogram_config import MiniprogramConfigRepository
+from repositories.user_device_map import UserDeviceMapRepository
 from services.weixin import WechatService
 from auth import create_access_token, create_refresh_token
 
@@ -33,6 +33,7 @@ class UserService:
         self.user_resource_repo = UserSourceRepository(db)
         self.userid_unionid_mapping_repo = UseridUnionidMappingRepository(db)
         self.miniprogram_repo = MiniprogramConfigRepository(db)
+        self.user_device_map_repo = UserDeviceMapRepository(db)
 
     async def get_user(self) -> Optional[UserInfo]:
         user_info = await self.user_repo.get(user_id=self.token.user_id)
@@ -201,6 +202,50 @@ class UserService:
     async def update_user(self, user_info: UpdateUserRequest) -> UserInfo:
         user = await self.user_repo.update(self.token.user_id, user_info)
         return UserInfo.model_validate(user)
+
+    async def bind_device(self, device_id: str) -> bool:
+        """绑定设备到当前用户"""
+        user_id = self.token.user_id
+        
+        # 检查是否已绑定
+        existing = await self.user_device_map_repo.get(user_id, device_id)
+        if existing:
+            logger.info(f"设备 {device_id} 已绑定到用户 {user_id}")
+            return True
+        
+        # 检查设备是否已绑定到其他用户
+        device_binding = await self.user_device_map_repo.get_by_device_id(device_id)
+        if device_binding:
+            # 如果设备已绑定到其他用户，先解绑
+            logger.info(f"设备 {device_id} 已绑定到其他用户，先解绑")
+            await self.user_device_map_repo.soft_delete(device_binding.user_id, device_id)
+        
+        # 创建新的绑定关系
+        await self.user_device_map_repo.create(user_id, device_id)
+        logger.info(f"设备 {device_id} 绑定到用户 {user_id} 成功")
+        return True
+
+    async def unbind_device(self, device_id: str) -> bool:
+        """解绑设备"""
+        user_id = self.token.user_id
+        result = await self.user_device_map_repo.soft_delete(user_id, device_id)
+        if result:
+            logger.info(f"用户 {user_id} 解绑设备 {device_id} 成功")
+        else:
+            logger.warning(f"用户 {user_id} 解绑设备 {device_id} 失败：绑定关系不存在")
+        return result
+
+    async def get_user_devices(self) -> list:
+        """获取用户的所有设备"""
+        mappings = await self.user_device_map_repo.get_by_user_id(self.token.user_id)
+        return [{"device_id": m.device_id, "created_at": m.created_at} for m in mappings]
+
+    async def get_device_user(self, device_id: str) -> dict | None:
+        """获取设备绑定的用户"""
+        mapping = await self.user_device_map_repo.get_by_device_id(device_id)
+        if mapping:
+            return {"user_id": mapping.user_id, "created_at": mapping.created_at}
+        return None
 
 
 class InternalUserService:

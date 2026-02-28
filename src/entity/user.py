@@ -49,6 +49,14 @@ class UpdateUserRequest(CreateUserRequest):
     ...
 
 
+class BindDeviceRequest(BaseModel):
+    device_id: str = Field(description="设备ID")
+
+
+class UnbindDeviceRequest(BaseModel):
+    device_id: str = Field(description="设备ID")
+
+
 # Template message related data structures
 class MiniprogramInfo(BaseModel):
     """Miniprogram jump information"""

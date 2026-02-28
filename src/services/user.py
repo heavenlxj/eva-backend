@@ -32,7 +32,7 @@ class UserService:
         self.user_repo = UserRepository(db)
         self.user_resource_repo = UserSourceRepository(db)
         self.userid_unionid_mapping_repo = UseridUnionidMappingRepository(db)
-        miniprogram_repo = MiniprogramConfigRepository(db)
+        self.miniprogram_repo = MiniprogramConfigRepository(db)
 
     async def get_user(self) -> Optional[UserInfo]:
         user_info = await self.user_repo.get(user_id=self.token.user_id)
@@ -55,20 +55,14 @@ class UserService:
         )
         if user is None:
             return None
-        
-        await self.user_visit_repo.record_visit(user.user_id)
-        logger.info(f"user {user.user_id} visit stats recorded")
 
         access_token = create_access_token({"user_id": user.user_id})
         refresh_token = create_refresh_token({"user_id": user.user_id})
 
-        experiments = await self.experiments_service.assign(user.user_id)
-
         login_resp = UserLoginResponse(
             user_id=user.user_id,
             access_token=access_token,
-            refresh_token=refresh_token,
-            experiments=experiments,
+            refresh_token=refresh_token
         )
 
         return login_resp

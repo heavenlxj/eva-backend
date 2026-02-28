@@ -10,10 +10,7 @@ class WechatMiniLink:
     def get_menu_config():
         """获取菜单配置，使用当前配置的APPID"""
         # 获取当前配置的APPID
-        if settings.wechat.USE_SECONDARY_APP:
-            current_appid = settings.wechat.SECONDARY_APPID
-        else:
-            current_appid = settings.wechat.APPID
+        current_appid = settings.wechat.APPID
         
         return {
             "button": [

@@ -33,23 +33,18 @@ class WechatService:
         self.db = db
         self.wechat_repo = WechatServiceUserRepository(db)
         self.user_source_repo = UserSourceRepository(db)
-        self.user_child_repo = UserChildRepository(db)
         self.mapping_repo = UseridUnionidMappingRepository(db)
 
     @staticmethod
     def get_current_app_config():
         """获取当前配置的APPID和SECRET"""
-        if settings.wechat.USE_SECONDARY_APP:
-            return settings.wechat.SECONDARY_APPID, settings.wechat.SECONDARY_SECRET
-        else:
-            return settings.wechat.APPID, settings.wechat.SECRET
+        return settings.wechat.APPID, settings.wechat.SECRET
 
     @staticmethod
     def get_app_config(app_id):
         """根据app_id获取对应的secret"""
         miniprogram_settings = {
-            settings.wechat.APPID: settings.wechat.SECRET,
-            settings.wechat.SECONDARY_APPID: settings.wechat.SECONDARY_SECRET
+            settings.wechat.APPID: settings.wechat.SECRET
         }
         return miniprogram_settings.get(app_id)
 
@@ -668,48 +663,48 @@ class WechatService:
             logger.error(f"Failed to send template message via user_id: {e}")
             return False
 
-    async def send_template_message_by_child_id(self, child_id: str, template_id: str, data: Dict[str, Any], url: Optional[str] = None, miniprogram: Optional[Dict] = None):
-        """Send template message via child_id
+    # async def send_template_message_by_child_id(self, child_id: str, template_id: str, data: Dict[str, Any], url: Optional[str] = None, miniprogram: Optional[Dict] = None):
+    #     """Send template message via child_id
 
-        Args:
-            child_id: Child ID
-            template_id: Template ID
-            data: Template data
-            url: Click to jump to web page link (optional)
-            miniprogram: Jump to miniprogram info (optional)
-                {
-                    "appid": "miniprogram appid",
-                    "pagepath": "pages/index/index"
-                }
-        """
-        try:
-            # Get user_id via child_id from whale API
-            user_children = await self.user_child_repo.get_with_child_id(child_id)
-            if not user_children:
-                logger.warning(f"No corresponding user_id found for child: {child_id}")
-                return False
+    #     Args:
+    #         child_id: Child ID
+    #         template_id: Template ID
+    #         data: Template data
+    #         url: Click to jump to web page link (optional)
+    #         miniprogram: Jump to miniprogram info (optional)
+    #             {
+    #                 "appid": "miniprogram appid",
+    #                 "pagepath": "pages/index/index"
+    #             }
+    #     """
+    #     try:
+    #         # Get user_id via child_id from whale API
+    #         user_children = await self.user_child_repo.get_with_child_id(child_id)
+    #         if not user_children:
+    #             logger.warning(f"No corresponding user_id found for child: {child_id}")
+    #             return False
 
-            # Try to send template message to all users associated with this child
-            success_count = 0
-            total_count = len(user_children)
+    #         # Try to send template message to all users associated with this child
+    #         success_count = 0
+    #         total_count = len(user_children)
 
-            for user_child in user_children:
-                try:
-                    result = await self.send_template_message_by_user_id(user_child.user_id, template_id, data, url, miniprogram)
-                    if result:
-                        success_count += 1
-                        logger.info(f"Successfully sent template message to user {user_child.user_id} for child {child_id}")
-                    else:
-                        logger.warning(f"Failed to send template message to user {user_child.user_id} for child {child_id}")
-                except Exception as e:
-                    logger.error(f"Error sending template message to user {user_child.user_id} for child {child_id}: {e}")
+    #         for user_child in user_children:
+    #             try:
+    #                 result = await self.send_template_message_by_user_id(user_child.user_id, template_id, data, url, miniprogram)
+    #                 if result:
+    #                     success_count += 1
+    #                     logger.info(f"Successfully sent template message to user {user_child.user_id} for child {child_id}")
+    #                 else:
+    #                     logger.warning(f"Failed to send template message to user {user_child.user_id} for child {child_id}")
+    #             except Exception as e:
+    #                 logger.error(f"Error sending template message to user {user_child.user_id} for child {child_id}: {e}")
 
-            logger.info(f"Template message sending completed for child {child_id}: {success_count}/{total_count} successful")
-            return success_count > 0  # Return True if at least one message was sent successfully
+    #         logger.info(f"Template message sending completed for child {child_id}: {success_count}/{total_count} successful")
+    #         return success_count > 0  # Return True if at least one message was sent successfully
 
-        except Exception as e:
-            logger.error(f"Failed to send template message via child_id: {e}")
-            return False
+    #     except Exception as e:
+    #         logger.error(f"Failed to send template message via child_id: {e}")
+    #         return False
 
     def _generate_welcome_content(self, device_info: Optional[Dict[str, str]] = None) -> str:
         """生成欢迎消息内容

@@ -183,34 +183,34 @@ async def send_template_message_by_user(
         return BaseResponse.fail(ErrorCode.TEMPLATE_MESSAGE_SERVICE_ERROR)
 
 
-@wx_router.post("/template/child")
-async def send_template_message_by_child(
-    request: SendTemplateMessageByChildRequest,
-    db: DB_SESSION
-):
-    """Send template message via child_id interface"""
-    try:
-        service = WechatService(db)
+# @wx_router.post("/template/child")
+# async def send_template_message_by_child(
+#     request: SendTemplateMessageByChildRequest,
+#     db: DB_SESSION
+# ):
+#     """Send template message via child_id interface"""
+#     try:
+#         service = WechatService(db)
         
-        data_dict = {key: item.model_dump() for key, item in request.data.items()}
-        miniprogram_dict = request.miniprogram.model_dump() if request.miniprogram else None
+#         data_dict = {key: item.model_dump() for key, item in request.data.items()}
+#         miniprogram_dict = request.miniprogram.model_dump() if request.miniprogram else None
         
-        success = await service.send_template_message_by_child_id(
-            request.child_id, 
-            request.template_id, 
-            data_dict, 
-            request.url, 
-            miniprogram_dict
-        )
+#         success = await service.send_template_message_by_child_id(
+#             request.child_id, 
+#             request.template_id, 
+#             data_dict, 
+#             request.url, 
+#             miniprogram_dict
+#         )
         
-        if success:
-            return BaseResponse.success(None)
-        else:
-            return BaseResponse.fail(ErrorCode.TEMPLATE_MESSAGE_CHILD_USER_NOT_FOUND)
+#         if success:
+#             return BaseResponse.success(None)
+#         else:
+#             return BaseResponse.fail(ErrorCode.TEMPLATE_MESSAGE_CHILD_USER_NOT_FOUND)
             
-    except Exception as e:
-        logger.error(f"Failed to send template message via child_id: {e}")
-        return BaseResponse.fail(ErrorCode.TEMPLATE_MESSAGE_SERVICE_ERROR)
+#     except Exception as e:
+#         logger.error(f"Failed to send template message via child_id: {e}")
+#         return BaseResponse.fail(ErrorCode.TEMPLATE_MESSAGE_SERVICE_ERROR)
 
 
 @wx_router.get("/get-openid-by-user/{user_id}")

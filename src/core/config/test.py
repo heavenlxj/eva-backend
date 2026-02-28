@@ -14,7 +14,7 @@ class MySQLConfig(BaseSettings):
     PORT: int = 3306
     USERNAME: str = "benepal_test"
     PASSWORD: str = "XOS3iePxHc+vud6z"
-    DATABASE: str = "kido"
+    DATABASE: str = "test"
     ECHO: bool = False
     POOL_PRE_PING: bool = True
     POOL_SIZE: int = 50
@@ -51,24 +51,12 @@ class RedisConfig(BaseSettings):
 
 class WeChat(BaseSettings):
 
-    APPID: str = "wx269b622ec0a8fa09"
-    SECRET: str = "a1f70a3e63da207284f9c59d6a81ba8e"
+    APPID: str = "wx681f5c9caf74f359"
+    SECRET: str = "7736815ced76658191611e6ac36f156c"
     SECRET_KEY: str = "36c69eaa3ec548e0af0165f37d1d6cb2"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 3000
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-    SERVICE_APPID: str = "wx905fd3a22ac118a8"
-    SERVICE_SECRET: str = "a7a64d7147a8d8e58e5e2466ab2b29b8"
-    SERVICE_TOKEN: str = "BENEPAL"
-
-    SECONDARY_APPID: str = "wx8ed40a98cf7d0f92"
-    SECONDARY_SECRET: str = "6d008c643000f6d4f5ccce9d13ce61e8"
-
-    # 切换开关：使用哪个小程序配置 (primary/secondary)
-    USE_SECONDARY_APP: bool = False
-
-    # 禁用微信内容安全验证
-    DISABLE_WECHAT_CONTENT_SECURITY_CHECK: bool = True
 
     class Config:
         env_prefix = "WECHAT_"

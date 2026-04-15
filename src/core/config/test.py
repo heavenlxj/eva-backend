@@ -10,11 +10,11 @@ from pydantic_settings import BaseSettings
 
 class MySQLConfig(BaseSettings):
 
-    HOST: str = "pc-2ze4j7g504317t961.rwlb.rds.aliyuncs.com"
-    PORT: int = 3306
-    USERNAME: str = "benepal_test"
-    PASSWORD: str = "XOS3iePxHc+vud6z"
-    DATABASE: str = "test"
+    HOST: str = "8.138.15.53"
+    PORT: int = 13306
+    USERNAME: str = "root"
+    PASSWORD: str = "7p*qm9bw4JQRxN_y6WZL"
+    DATABASE: str = "vela"
     ECHO: bool = False
     POOL_PRE_PING: bool = True
     POOL_SIZE: int = 50

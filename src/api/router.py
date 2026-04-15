@@ -8,6 +8,7 @@ from api.routers.wx_router import wx_router
 from api.routers.device_router import device_router
 from api.routers.data_report_router import api_router as data_report_router
 from api.routers.app_config_router import router as app_config_router
+from api.routers.role_router import role_router
 
 api_router = APIRouter(prefix="/app/api")
 
@@ -16,6 +17,7 @@ api_router.include_router(wx_router)
 api_router.include_router(device_router)
 api_router.include_router(data_report_router)
 api_router.include_router(app_config_router)
+api_router.include_router(role_router)
 
 # 导出main_router以供app.py使用
 __all__ = ["api_router", "main_router"]

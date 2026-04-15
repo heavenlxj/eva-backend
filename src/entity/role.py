@@ -20,13 +20,12 @@ class RoleInfo(BaseModel):
 
 class BindRoleRequest(BaseModel):
     role_id: str = Field(description="角色ID")
-    device_id: str = Field(description="设备ID")
 
 
 class UserRoleBindingInfo(BaseModel):
     role_id: str = Field(description="角色ID")
     role_name: Optional[str] = Field(description="角色名称", default=None)
-    device_id: str = Field(description="设备ID")
+    nick_name: Optional[str] = Field(description="角色昵称", default=None)
     created_at: Optional[datetime] = Field(description="绑定时间", default=None)
 
     model_config = ConfigDict(from_attributes=True)

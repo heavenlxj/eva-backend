@@ -28,7 +28,7 @@ class RoleService:
         return UserRoleBindingInfo(
             role_id=mapping.role_id,
             role_name=role.name if role else None,
-            device_id=mapping.device_id,
+            nick_name=role.nick_name if role else None,
             created_at=mapping.created_at
         )
 
@@ -49,7 +49,7 @@ class RoleService:
             old_role_id = await self.user_role_map_repo.soft_delete_active(user_id)
             logger.info(f"用户 {user_id} 解绑旧角色 {old_role_id}")
 
-        await self.user_role_map_repo.create(user_id, request.role_id, request.device_id)
+        await self.user_role_map_repo.create(user_id, request.role_id)
         logger.info(f"用户 {user_id} 绑定新角色 {request.role_id}")
 
         return {

@@ -10,11 +10,10 @@ class UserRoleMapRepository:
     def __init__(self, db: AsyncSession):
         self.session = db
 
-    async def create(self, user_id: str, role_id: str, device_id: str) -> UserRoleMap:
+    async def create(self, user_id: str, role_id: str) -> UserRoleMap:
         mapping = UserRoleMap(
             user_id=user_id,
             role_id=role_id,
-            device_id=device_id
         )
         self.session.add(mapping)
         await self.session.commit()
